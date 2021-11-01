@@ -4,11 +4,11 @@ love.keyboard.setKeyRepeat(true)
 local needDraw=true
 local sel=1
 
-local f=gc.setNewFont("font.ttf",40)
+local f=gc.setNewFont("res/font.ttf",40)
 local s,t="",gc.newText(f,"")
 gc.setDefaultFilter("linear","linear")
 
-local S=require("list")
+local S=require("res/list")
 --[[
 You need create list.lua like this:
 
@@ -20,12 +20,12 @@ return{
         bar=newImg("body.png"),
         tail=newImg("tail.png"),
         textColor={.2,.2,.2},
-        headX=180,    --barX
-        headY=75,    --barY
-        textX=170,    --stringX
-        textY=95,    --stringY
-        tailY=75,    --tailY
-        tailLen=30,    --tailLen
+        headX=180,  --barX
+        headY=75,   --barY
+        textX=170,  --stringX
+        textY=95,   --stringY
+        tailY=75,   --tailY
+        tailLen=30, --tailLen
     },
     {
         ...
