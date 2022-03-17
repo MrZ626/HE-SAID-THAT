@@ -1,14 +1,15 @@
-local gc,utf8=love.graphics,require("utf8")
+local utf8=require('utf8')
+local gc=love.graphics
 love.keyboard.setKeyRepeat(true)
 
 local needDraw=true
 local sel=1
 
-local f=gc.setNewFont("res/font.ttf",40)
-local s,t="",gc.newText(f,"")
-gc.setDefaultFilter("linear","linear")
+local font=gc.setNewFont('res/font.ttf',40)
+local str,text='',gc.newText(font,'')
+gc.setDefaultFilter('linear','linear')
 
-local S=require("res/list")
+local data=require('res/list')
 --[[
 You need create list.lua like this:
 
@@ -16,9 +17,9 @@ You need create list.lua like this:
 local newImg=love.graphics.newImage
 return{
     {
-        head=newImg("head.png"),
-        bar=newImg("body.png"),
-        tail=newImg("tail.png"),
+        head=newImg('head.png'),
+        bar=newImg('body.png'),
+        tail=newImg('tail.png'),
         textColor={.2,.2,.2},
         headX=180,  --barX
         headY=75,   --barY
@@ -35,19 +36,23 @@ return{
 ]]
 
 function love.keypressed(k)
-    if k=="backspace"then
-        local byteoffset = utf8.offset(s,-1)
+    if k=='backspace'then
+        local byteoffset = utf8.offset(str,-1)
         if byteoffset then
-            s=string.sub(s,1, byteoffset-1)
+            str=string.sub(str,1, byteoffset-1)
         end
         needDraw=true
-    elseif k=="tab"then
-        sel=sel%#S+1
+    elseif k=='tab'then
+        if love.keyboard.isDown('lshift','rshift')then
+            sel=(sel-2)%#data+1
+        else
+            sel=sel%#data+1
+        end
         needDraw=true
     end
 end
 function love.textinput(c)
-    s=s..c
+    str=str..c
     needDraw=true
 end
 function love.resize()
@@ -58,20 +63,20 @@ function love.run()
     return function()
         love.event.pump()
         for name,a in love.event.poll()do
-            if name=="quit"then return 0 end
+            if name=='quit'then return 0 end
             love.handlers[name](a)
         end
         if needDraw then
-            t=gc.newText(f,s)
-            local str=S[sel]
-            local barLen=math.max(t:getWidth(),30)-str.tailLen
+            text=gc.newText(font,str)
+            local d=data[sel]
+            local barLen=math.max(text:getWidth(),30)-d.tailLen
             gc.clear(.92,.93,.96)
             gc.setColor(1,1,1)
-            gc.draw(str.head,20,20)
-            gc.draw(str.bar,str.headX,str.headY,nil,barLen,1)
-            gc.draw(str.tail,str.headX+barLen,str.tailY)
-            gc.setColor(str.textColor)
-            gc.draw(t,str.textX,str.textY)
+            gc.draw(d.head,20,20)
+            gc.draw(d.bar,d.headX,d.headY,nil,barLen,1)
+            gc.draw(d.tail,d.headX+barLen,d.tailY)
+            gc.setColor(d.textColor)
+            gc.draw(text,d.textX,d.textY)
             gc.present()
             needDraw=false
         end
